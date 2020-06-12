@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "string": "cpp",
+        "algorithm": "cpp",
+        "__locale": "cpp",
+        "__string": "cpp",
+        "string_view": "cpp",
+        "__bit_reference": "cpp",
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "unordered_map": "cpp",
+        "iosfwd": "cpp",
+        "sstream": "cpp",
+        "vector": "cpp",
+        "new": "cpp",
+        "map": "cpp",
+        "array": "cpp",
+        "iostream": "cpp"
+    }
+}
