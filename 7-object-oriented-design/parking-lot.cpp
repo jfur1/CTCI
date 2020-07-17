@@ -19,23 +19,72 @@ class Vehicle{
     private:
         
     public:
-        Vehicle(){
-            
+        // 1 = motorcycle, 2 = compact, 3 = large
+        int spot_type;
+        // 1 = motorcycle, 2 = car, 3 = bus
+        int type;
+
+        Vehicle(int type){
+            spot_type = type;
         }
 };
 
 class Motorcycle : public Vehicle{
-    private:
-        int size;
+    public:
+        
     
+};
+
+class Car : public Vehicle{
+    public:
+
+};
+
+class Bus : public Vehicle{
+    public:  
+        
 };
 
 class ParkingSpot{
     private:
+        int spot_type;
 
     public:
-        ParkingSpot(){
+        ParkingSpot(int type){
+            spot_type = type;
+        }
 
+        bool fits_vehicle(int vehicle_type){
+            if(spot_type >= vehicle_type){
+                return true;
+            }
+            return false;
         }
 
 };
+
+class ParkingLot{
+    private:
+        int nLevels;
+
+
+    public:
+        ParkingLot(int nLevels){
+            nLevels = nLevels;
+        }
+
+        void print_level(){
+            for(int i = 0; i < nLevels; i++){
+                
+            }
+        }
+
+        void init_vehicles(){
+
+        }
+
+        bool park(int vehicle_type, int nSpots){
+            
+        }
+
+};  

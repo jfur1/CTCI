@@ -166,7 +166,7 @@ class Othello{
                             // Executes just before opponent's turn, so if opponent has a valid move, player has not won the game.
                             int tmpRow = adjRow + delta_x[i];
                             int tmpCol = adjCol + delta_y[i];
-                            while(tmpRow > 0 && tmpRow < 7 && tmpCol > 0 && tmpCol < 7){
+                            while(tmpRow >= 0 && tmpRow <= 7 && tmpCol >= 0 && tmpCol <= 7){
                                 if(board[tmpRow][tmpCol] == opponent){
                                     return false;
                                 }
