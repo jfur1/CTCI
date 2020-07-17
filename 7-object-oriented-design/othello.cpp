@@ -77,8 +77,6 @@ class Othello{
             }
         }
 
-        
-        
         // Functions checks if the tile at the given location is free, and whether or not the move captures an opponent piece.
         // Returns true if move is valid and capturing, else returns false
         bool validateMove(int player, string move){
