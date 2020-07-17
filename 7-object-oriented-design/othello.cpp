@@ -21,6 +21,10 @@ class Othello{
     public:
         Othello(){
             turn = 1;
+            init_board();
+        }
+
+        void init_board(){
             for(int i = 0; i < 8; i++){
                 for(int j = 0; j < 8; j++){
                     if(i == 3 && j == 3)
@@ -60,11 +64,25 @@ class Othello{
                 cout << endl;
             }
         }
+
+        void set_tiles(int st_row, int st_col, int end_row, int end_col, int delta_x, int delta_y, int nSquares){
+            //cout << "Delta x: " << delta_x << endl;
+            //cout << "Delta y: " << delta_y << endl;
+            int i = 0;
+            while(i < nSquares){
+                board[st_row][st_col] = turn; 
+                st_col += delta_y;
+                st_row += delta_x;
+                i++;
+            }
+        }
+
+        
         
         // Functions checks if the tile at the given location is free, and whether or not the move captures an opponent piece.
         // Returns true if move is valid and capturing, else returns false
         bool validateMove(int player, string move){
-            int valid_flag = 0;
+            bool valid_move = false;
             // Convert the player's move into row & column indexes
             int row = int(move[0]) - 48 - 1;
             int col = move[2] - 96 - 1;
@@ -82,37 +100,49 @@ class Othello{
             int delta_y[] = {0, 1, 1, 1, 0, -1, -1, -1};
             int opponent = (player == 0) ? 1 : 0;
 
-            // For each adjacent tile, see if the opposite side is also the current color
+            // Up to 8 adjacent tiles for any tile
             for(int i = 0; i < 8; i++){
-                // Check if there is an adjacent opponent tile
-                int tmpRow = row + delta_x[i];
-                int tmpCol = col + delta_y[i];
-                if(tmpRow < 0 || tmpRow > 7)
+                int nSquares = 0;
+                // Iterate original position by cardinal deltas 
+                int adjRow = row + delta_x[i];
+                int adjCol = col + delta_y[i];
+                // Edge Cases (Literally :D) -- Do not check "adjacent" tiles that lie outside the matrix
+                if(adjRow < 0 || adjRow > 7)
                     continue;
-                if(tmpCol < 0 || tmpCol > 7)
+                if(adjCol < 0 || adjCol > 7)
                     continue;
-                if(board[tmpRow][tmpCol] == opponent){
-                    cout << "* Found adjacent enemy piece at row: " << tmpRow+1 << " and col: " << char(tmpCol+97) << endl;
-                    int oppositeRow = tmpRow + delta_x[i];
-                    int oppositeCol = tmpCol + delta_y[i];
-                    cout << "\tChecking for enclosing piece at row: " << oppositeRow+1 << " and col: " << char(oppositeCol+97) << endl;
-                    // Is the opposite side of the adjacent-opponent piece also the current player's?
-                    if(board[oppositeRow][oppositeCol] == player){
-                        cout << "\tValid Move! Captured enemy piece.\n";
-                        board[row][col] = player;
-                        board[tmpRow][tmpCol] = player;
-                        valid_flag = 1;
-                    }   
-                    else{
-                        cout << "\tNo enclosing piece.\n";
+                // If the adjacent tile belongs to the opponent
+                if(board[adjRow][adjCol] == opponent){
+                    cout << "* Found adjacent enemy piece at row: " << adjRow+1 << " and col: " << char(adjCol+97) << endl;
+                    nSquares++;
+                    // Scan the proceeding row/column for a closing piece, if none then continue 
+                    int tmpRow = adjRow + delta_x[i];
+                    int tmpCol = adjCol + delta_y[i];
+                    bool valid_capture = false;
+                    while(tmpRow >= 0 && tmpRow < 8 && tmpCol >= 0 && tmpCol < 8){
+                        nSquares++;
+                        // Found an encapsulating piece -- the opponent's pieces that are surrounded get captured.
+                        if(board[tmpRow][tmpCol] == player){
+                            cout << "\tFound an enclosing piece at row: " << tmpRow+1 << " and col: " << char(tmpCol+97) << endl;
+                            //cout << "nSquares: " << nSquares << endl;
+                            set_tiles(row, col, tmpRow, tmpCol, delta_x[i], delta_y[i], nSquares);
+                            cout << "\tValid Move! Captured enemy piece(s).\n";
+                            valid_capture = true;
+                            valid_move = true;
+                            break;
+                        }
+                        tmpRow += delta_x[i];
+                        tmpCol += delta_y[i];
                     }
+                    if(!valid_capture)
+                        cout << "\tNo enclosing piece found.\n";
                 }
             }
-
-            if(valid_flag == 0)
+            if(!valid_move){
+                cout << "Invalid move! No adjacent enemy pieces to be captured!\n";
                 return 0;
-            else
-                return 1;
+            }
+            return 1;
         }
 
         // Function checks if the given player wins the game after making a move. 
@@ -130,16 +160,20 @@ class Othello{
                             // Check if there is an adjacent tile owned by the player who just took their turn
                             int adjRow = row + delta_x[i];
                             int adjCol = col + delta_y[i];
+                            // Edge Cases (Literally :D) -- Do not check "adjacent" tiles that lie outside the matrix
                             if(adjRow < 0 || adjRow > 7)
                                 continue;
                             if(adjCol < 0 || adjCol > 7)
                                 continue;
-                            int oppositeRow = adjRow + delta_x[i];
-                            int oppositeCol = adjCol + delta_y[i];
-                            // Opponent's move after this function is called. If there exists an open space adjacent to the current player, 
-                            // which is also enclosed by the opponent on the opposite side, then the opponent still has valid moves remaining.
-                            if(board[adjRow][adjCol] == player && board[oppositeRow][oppositeCol] == opponent){
-                                return false;
+                            // Executes just before opponent's turn, so if opponent has a valid move, player has not won the game.
+                            int tmpRow = adjRow + delta_x[i];
+                            int tmpCol = adjCol + delta_y[i];
+                            while(tmpRow > 0 && tmpRow < 7 && tmpCol > 0 && tmpCol < 7){
+                                if(board[tmpRow][tmpCol] == opponent){
+                                    return false;
+                                }
+                                tmpRow += delta_x[i];
+                                tmpCol += delta_y[i];                            
                             }
                         }
                     }
@@ -191,6 +225,7 @@ class Othello{
 
         // Driver function used to play the game
         bool play(){
+            init_board();
             while(1){
                 // Dark goes first, alternate each turn.
                 turn = (turn != 0) ? 0 : 1;
@@ -214,7 +249,8 @@ class Othello{
                 // Once a move has been made, check for winner. If the resulting move leaves the opponent with no valid moves, then the current player wins.
                 if(checkWin(turn)){ 
                     cout << "Player " << turn << " wins!\n";
-                    return 1;
+                    printBoard();
+                    break;
                 }
             }
             // Function returns player decision to play again
@@ -226,12 +262,10 @@ class Othello{
             cout << "Thanks for playing!\n";
             return 0;
         }
-
-        
-
 };
 
 int main(){
+    // Initialize a game
     Othello game = Othello();
 
     // Dark player goes first
@@ -239,6 +273,9 @@ int main(){
     while(play_again){
         play_again = game.play();
     }
+
+    // Sequence of moves for the fastest known game of othello -- used to test checkWin()
+    string moves[] = {"6 e", "4 f", "3 e", "6 f", "5 g", "6 d", "7 e", "5 f", "5 c"};
 
     return 0;
 }
