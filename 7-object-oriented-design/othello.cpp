@@ -246,7 +246,11 @@ class Othello{
                 
                 // Once a move has been made, check for winner. If the resulting move leaves the opponent with no valid moves, then the current player wins.
                 if(checkWin(turn)){ 
-                    cout << "Player " << turn << " wins!\n";
+                    if(turn == 0)
+                        cout << "Player ○ wins!\n";
+                    else
+                        cout << "Player ● wins!\n";
+                    
                     printBoard();
                     break;
                 }

@@ -25,6 +25,7 @@ class Vehicle{
         int type;
 
         Vehicle(int type){
+            type = type;
             spot_type = type;
         }
 };
@@ -63,6 +64,11 @@ class ParkingSpot{
 
 };
 
+class ParkingLevel{
+    public:
+
+};
+
 class ParkingLot{
     private:
         int nLevels;
@@ -73,13 +79,13 @@ class ParkingLot{
             nLevels = nLevels;
         }
 
-        void print_level(){
+        void print_level(int level){
             for(int i = 0; i < nLevels; i++){
                 
             }
         }
 
-        void init_vehicles(){
+        void init_vehicles(int vehicle_type){
 
         }
 
