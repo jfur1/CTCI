@@ -18,7 +18,7 @@ void TOH(int N, char source, char aux, char dest){
         cout << "Move disk " << N << " from " << source << " to " << dest << endl;
     }
     TOH(N-1, source, dest, aux);
-    cout << "Move dist " << N << " from " << source << " to " << dest << endl;
+    cout << "Move disk " << N << " from " << source << " to " << dest << endl;
     TOH(N-1, aux, source, dest);
 }
 
