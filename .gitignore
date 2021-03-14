@@ -1,5 +1,4 @@
 .ipynb_checkpoints
 .vscode
 .DS_Store
-cat id_rsa.pub
-car id_rsa.pub.pub
+**/cat
