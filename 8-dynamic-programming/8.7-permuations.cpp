@@ -6,7 +6,7 @@
 using namespace std;
 
 void permutations(string str, int i, int n){
-    if(i == n - 1){
+    if(i == n - 1){ 
         cout << str << endl;
         return;
     }
